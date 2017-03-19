@@ -1,7 +1,7 @@
-.PHONY test
+.PHONY: test
 run:
 	cp env.tpl .env
-	npm start
+	node server.js
 deps:
 	npm i
 test:

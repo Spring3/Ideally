@@ -1,4 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 let mongo;
 
 async function connect() {
@@ -14,5 +15,6 @@ async function connect() {
 
 
 module.exports = {
-  connect
+  connect,
+  ObjectId
 };
