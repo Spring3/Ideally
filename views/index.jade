@@ -1,0 +1,110 @@
+extends _bootstrap
+append styles
+  link(href='css/bootstrap.min.css', rel='stylesheet')
+  link(href='css/index.css', rel='stylesheet')
+block body
+  +navbar("Ideally", "dropdown_menu", "", "/")
+
+  .jumbotron.row
+    .container.col-sm-6.col-sm-offset-3
+      h2 Let's Get Started!
+      p
+        | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
+      p
+        +btn-success("Sign in")
+        +btn("Sign in with Github")
+  .container
+    .row
+      .col-md-4.margined-top
+        .pane
+          h2 Project title
+          p
+            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+          strong Looking for:
+          +list-group-custom()
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Node.js Developer
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Senior Database Specialist
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Designer
+          p
+            +btn("View more")
+      .col-md-4.margined-top
+        .pane
+          h2 Project title
+          p
+            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+          strong Looking for:
+          +list-group-custom()
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Node.js Developer
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Senior Database Specialist
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Designer
+          p
+            +btn("View more")
+      .col-md-4.margined-top
+        .pane
+          h2 Project title
+          p
+            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+          strong Looking for:
+          +list-group-custom()
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Node.js Developer
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Senior Database Specialist
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Designer
+          p
+            +btn("View more")
+      .col-md-4.margined-top
+        .pane
+          h2 Project title
+          p
+            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+          strong Looking for:
+          +list-group-custom()
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Node.js Developer
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Senior Database Specialist
+            +list-group-item("#/")
+              +btn-xs("✓")
+              span
+                | Designer
+          p
+            +btn("View more")
+    hr
+    footer
+      p 
+        | Copyrights © 
+        a(href="https://www.linkedin.com/in/dvasylenko/") Daniyil Vasylenko
+        |  (2017)
+append scripts
+  script(src="js/jquery.min.js")
+  script(src="js/bootstrap.min.js")

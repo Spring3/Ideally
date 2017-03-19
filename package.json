@@ -1,0 +1,30 @@
+{
+  "name": "ideally",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spring3/Ideally.git"
+  },
+  "author": "Daniyil Vasylenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Spring3/Ideally/issues"
+  },
+  "homepage": "https://github.com/Spring3/Ideally#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.2",
+    "mocha": "^3.2.0",
+    "mongodb": "^2.2.25",
+    "passport": "^0.3.2",
+    "redis": "^2.7.1",
+    "should": "^11.2.1",
+    "underscore": "^1.8.3"
+  }
+}
