@@ -4,101 +4,54 @@ append styles
   link(href='css/index.css', rel='stylesheet')
 block body
   +navbar("Ideally", "dropdown_menu", "", "/")
-
-  .jumbotron.row
-    .container.col-sm-6.col-sm-offset-3
-      h2 Let's Get Started!
-      p
-        | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
-      p
-        +btn-success("Sign in")
-        +btn("Sign in with Github")
   .container
     .row
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
+      if (action === "edit")
+        .col-xs-12.margined-top
+          .pane
+            form(method="post", action="/project/new")
+              +input("text", "name", "", "Project name")
+              +input("text", "name", "", "Project Link")
+              .form-group
+                label Project Description
+                textarea(class="form-control", rows="5")
+                  | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+              .form-group
+                label Looking for:
+                +list-group-custom()
+                  input.form-control(type="text", value="Node.js Developer")
+                  h5 
+                    small (comma-separated list of positions)
+              p
+                +submit("Publish", "primary")
+      else if (!action || action === 'view')
+        form.col-xs-12.col-sm-10.col-sm-offset-1.margined-top
+          .pane
+            .col-sm-6
+              h2 Project title
+              .form-group
+                h4 
+                  small Owner:   
+                  a(href="#/") John Doe
+              .form-group
+                label Description
+                p Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+            .col-sm-6(style="border-left: solid 1px #FE9E8F;")
+              h2 Looking for
+              +list-group-custom()
+                +list-group-item("#/")
+                  +btn-xs("✓")
+                  span
+                    | Node.js Developer
+                +list-group-item("#/")
+                  +btn-xs("✓")
+                  span
+                    | Senior Database Specialist
+                +list-group-item("#/")
+                  +btn-xs("✓")
+                  span
+                    | Designer
+              button.btn(class="btn-primary btn-block",type="button") Apply
     hr
     footer
       p 

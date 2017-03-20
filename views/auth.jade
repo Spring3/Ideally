@@ -4,101 +4,29 @@ append styles
   link(href='css/index.css', rel='stylesheet')
 block body
   +navbar("Ideally", "dropdown_menu", "", "/")
-
-  .jumbotron.row
-    .container.col-sm-6.col-sm-offset-3
-      h2 Let's Get Started!
-      p
-        | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
-      p
-        +btn-success("Sign in")
-        +btn("Sign in with Github")
   .container
     .row
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
+      .col-md-6.col-md-offset-3.margined-top
+        if (!action || action === 'signin')
+          form(method="post", action="/auth/in")
+            h3 Authorization
+            +input("text", "email", "", "Email")
+            +input("password", "password", "", "Password")
+            div(style="display:inline-block;width:100%;")
+              input.btn(class="btn-success btn-lg",type="submit",value="Sign in",style="float:left;width:47%;")
+              a.btn(class="btn-primary btn-lg", href="/auth?action=signup",style="float:right;width:47%;") Sign up
+            h4.margined-top.text-center or
+            a.btn(class="btn-default btn-block btn-lg gh",href="/auth?type=gh",role="button") Sign in with Github
+        else if (action === 'signup')
+          form(method="post", action="/auth/up")
+            h3 Registration
+            +input("text", "email", "", "Email")
+            +input("password", "password", "", "Password")
+            +input("password", "password", "", "Password repeat")
+            div(style="display:inline-block;width:100%;")
+              input.btn(class="btn-success btn-lg",type="submit",value="Sign up",style="float:left;width:47%;")
+              a.btn(class="btn-primary btn-lg", href="/auth",style="float:right;width:47%;") Sign in
+
     hr
     footer
       p 

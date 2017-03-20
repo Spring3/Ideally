@@ -43,6 +43,7 @@ nav {
   border: solid 2px #FE9E8F;
   border-radius: 3px;
   padding: 20px;
+  display: inline-block;
 }
 
 .margined-top {
@@ -54,3 +55,24 @@ nav {
   flex-direction: row;
   align-items: center;
 }
+
+.btn-primary {
+  background: #FA5B4D;
+  border-color: #FA5B4D;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background: #FE9E8F;
+  border-color: #FE9E8F;
+}
+
+.gh {
+  background: #24292E;
+  color: white;
+}
+
+.gh:hover, .gh:focus {
+  background: #464B4F;
+  color: white;
+}
+

@@ -83,7 +83,7 @@ app.get('/auth', (req, res, next) => {
   if (req.query.type === 'gh') {
     res.redirect('/auth/gh');
   } else {
-    res.render('auth');
+    res.render('auth', { action: req.query.action });
   }
 });
 
@@ -93,11 +93,23 @@ app.get('/auth/github', passport.authenticate('github', { successRedirect: '/', 
 });
 
 app.get('/project', (req, res, next) => {
-  res.render('project', { session: req.session });
+  res.render('project', { session: req.session, action: req.query.action });
 });
 
-app.get('/profile', ensureAuthenticated, (req, res, next) => {
-  res.render('profile', { session: req.session });
+app.get('/profile', (req, res, next) => {
+  res.render('profile', { session: req.session, action: req.query.action });
+});
+
+app.post('/auth/in', (req, res, next) => {
+});
+
+app.post('/auth/up', (req, res, next) => {
+});
+
+app.post('/project/new', (req, res, next) => {
+});
+
+app.post('/project/:id/apply', (req, res, next) => {
 });
 
 app.listen(process.env.PORT || 3000, () => {

@@ -11,8 +11,8 @@ block body
       p
         | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
       p
-        +a-btn-success('/auth') Sign in
-        +a-btn("/auth?type=gh") Sign in with Github
+        a.btn(class="btn-primary", href="/auth") Sign in with email
+        a.btn(class="btn-default gh",href="/auth?type=gh",role="button") Sign in with Github
   .container
     .row
       .col-md-4.margined-top
@@ -35,7 +35,7 @@ block body
               span
                 | Designer
           p
-            +btn("View more")
+            a.btn(class="btn-primary", href="/project?action=view") View more
       .col-md-4.margined-top
         .pane
           h2 Project title
@@ -56,7 +56,7 @@ block body
               span
                 | Designer
           p
-            +btn("View more")
+            a.btn(class="btn-primary", href="/project?action=view") View more
       .col-md-4.margined-top
         .pane
           h2 Project title
@@ -77,7 +77,7 @@ block body
               span
                 | Designer
           p
-            +btn("View more")
+            a.btn(class="btn-primary", href="/project?action=view") View more
       .col-md-4.margined-top
         .pane
           h2 Project title
@@ -98,7 +98,7 @@ block body
               span
                 | Designer
           p
-            +btn("View more")
+            a.btn(class="btn-primary", href="/project?action=view") View more
     hr
     footer
       p 
