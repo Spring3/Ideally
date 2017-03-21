@@ -5,100 +5,43 @@ append styles
 block body
   +navbar("Ideally", "dropdown_menu", "", "/")
 
-  .jumbotron.row
-    .container.col-sm-6.col-sm-offset-3
-      h2 Let's Get Started!
-      p
-        | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
-      p
-        +btn-success("Sign in")
-        +btn("Sign in with Github")
   .container
     .row
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
-      .col-md-4.margined-top
-        .pane
-          h2 Project title
-          p
-            | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
-          strong Looking for:
-          +list-group-custom()
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Node.js Developer
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Senior Database Specialist
-            +list-group-item("#/")
-              +btn-xs("✓")
-              span
-                | Designer
-          p
-            +btn("View more")
+      .col-xs-12.col-sm-10.col-sm-offset-1.col-md-8.col-md-offset-2.pane.margined-top
+        h3.text-center Profile Overview
+        div.col-sm-4.margined-top
+          .image-div(style='background: url(https://avatars2.githubusercontent.com/u/4171202?v=3) no-repeat center;height: 180px;width: 180px;background-size: cover;border-radius: 5px;margin:0 auto;')
+          p.text-center.margined-top Status:
+            span.text-success ✓ Available
+          if (user)
+            div.text-center
+              a.btn(class="btn-default", href="#/") Edit
+        div.col-sm-8.margined-top
+          h4.text-center.visible-xs Daniyil Vasylenko 
+          h4.hidden-xs Daniyil Vasylenko 
+          h5.margined-top
+            b Country: 
+            | Ukraine
+          h5 
+            b Bio: 
+            | Node.js engineer @dial-once 
+          h5 
+            b Github:
+              a(href="#/") @Spring3
+          h5 
+            b Main language: 
+            | Javascript
+          h5 
+            b Main stack: 
+            | Node.js, React.js, Electron
+          div
+            +list-group(['Node.js', 'Javascript', 'MongoDB', 'React', 'Electron', 'Bootstrap'])
+        div.clearfix
+        div.col-sm-4.col-sm-offset-4.margined-top
+          a.btn(class="btn-primary btn-lg btn-block",href="#/") Get in touch
+
+
+
     hr
     footer
       p 

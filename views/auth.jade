@@ -10,8 +10,8 @@ block body
         if (!action || action === 'signin')
           form(method="post", action="/auth/in")
             h3 Authorization
-            +input("text", "email", "", "Email")
-            +input("password", "password", "", "Password")
+            +input("text", "email", "", "Email", "email")
+            +input("password", "password", "", "Password", "password")
             div(style="display:inline-block;width:100%;")
               input.btn(class="btn-success btn-lg",type="submit",value="Sign in",style="float:left;width:47%;")
               a.btn(class="btn-primary btn-lg", href="/auth?action=signup",style="float:right;width:47%;") Sign up
@@ -20,9 +20,9 @@ block body
         else if (action === 'signup')
           form(method="post", action="/auth/up")
             h3 Registration
-            +input("text", "email", "", "Email")
-            +input("password", "password", "", "Password")
-            +input("password", "password", "", "Password repeat")
+            +input("text", "email", "", "Email", "email")
+            +input("password", "password", "", "Password", "password")
+            +input("password", "password", "", "Password repeat", "passwordRepeat")
             div(style="display:inline-block;width:100%;")
               input.btn(class="btn-success btn-lg",type="submit",value="Sign up",style="float:left;width:47%;")
               a.btn(class="btn-primary btn-lg", href="/auth",style="float:right;width:47%;") Sign in

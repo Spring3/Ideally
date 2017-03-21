@@ -6,7 +6,7 @@ block body
   +navbar("Ideally", "dropdown_menu", "", "/")
   .container
     .row
-      if (action === "edit")
+      if (user && action === "edit")
         .col-xs-12.margined-top
           .pane
             form(method="post", action="/project/new")
@@ -24,7 +24,7 @@ block body
                     small (comma-separated list of positions)
               p
                 +submit("Publish", "primary")
-      else if (!action || action === 'view')
+      else if (!user || !action || action === 'view')
         form.col-xs-12.col-sm-10.col-sm-offset-1.margined-top
           .pane
             .col-sm-6

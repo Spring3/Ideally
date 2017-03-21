@@ -76,3 +76,19 @@ nav {
   color: white;
 }
 
+.list-group-item {
+  margin: 5px;
+  padding: 5px 10px !important;
+  border-radius: 3px;
+  display: inline-block;
+  background: #FE9E8F;
+  color: white;
+}
+
+.list-group-item:hover {
+  background: #FA5B4D;
+}
+
+.white {
+  background: white;
+}
