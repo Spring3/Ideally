@@ -10,6 +10,7 @@ const mongo = require('./modules/mongo');
 const helmet = require('helmet');
 const passport = require('./modules/passport');
 const security = require('./modules/security');
+const github = require('./modules/github');
 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
 
 app.set('views', __dirname + '/views');
@@ -32,7 +33,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', (req, res, next) => { res.render('index', { user: req.user }); });
+app.get('/', async (req, res, next) => { res.render('index', { user: req.user, projects: await mongo.db.getProjects() }); });
 app.get('/about', (req, res, next) => { res.render('about'); });
 
 app.get('/auth', (req, res, next) => {
@@ -44,24 +45,33 @@ app.get('/auth', (req, res, next) => {
     res.render('auth', { action: req.query.action });
   }
 });
-
 app.get('/auth/gh', passport.authenticate('github', { scope: [ 'user:email', 'repo:status' ] }));
-app.get('/auth/github', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/auth' }));
+app.get('/auth/github', passport.authenticate('github', { successRedirect: '/profile', failureRedirect: '/auth' }));
 app.post('/auth/in', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/auth' }));
 app.post('/auth/up', passport.authenticate('local-signup', { successRedirect: '/profile', failureRedirect: '/auth?action=signup'}));
 
-app.get('/project', authCheck, (req, res, next) => {
-  res.render('project', { user: req.user, action: req.query.action });
-});
-app.get('/profile', authCheck, (req, res, next) => {
+app.get('/profile', authCheck, async (req, res, next) => {
   res.render('profile', { user: req.user, action: req.query.action });
 });
 
-app.post('/project/new', (req, res, next) => {
+app.get('/project', authCheck, async (req, res, next) => {
+  const unsavedProjects = [];
+  if (req.query.action === 'sync' && req.user.origin === 'github') {
+    const repos = await github.getUserRepos(req.user);
+    repos.map((repo) => { _.pick(repo, 'name', 'html_url', 'description', 'language')})
+    .forEach(async (repo) => {
+      let result = await mongo.db.getProject({ owner: req.user._id, name: repo.name });
+      if (!result) {
+        repo.owner = req.user._id;
+        unsavedProjects.push(repo);
+      }
+    });
+  }
+  res.render('project', { user: req.user, action: req.query.action, repos: unsavedProjects });
 });
-
-app.post('/project/:id/apply', (req, res, next) => {
-});
+app.post('/project/new', (req, res, next) => {});
+app.post('/project/update', (req, res, next) => {});
+app.post('/project/:id/apply', (req, res, next) => {});
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server is up');

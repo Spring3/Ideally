@@ -2,6 +2,8 @@ const mongo = require('./mongo');
 const passport = require('passport');
 const security = require('./security');
 const Validator = require('validatorjs');
+const github = require('./github');
+const _ = require('underscore');
 const GitHubStrategy = require('passport-github2').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -21,18 +23,13 @@ passport.use(new GitHubStrategy({
     origin: 'github',
     token: accessToken
   };
-  const queryResult = await mongo.db.collection('Users').findOneAndUpdate(
-    { email: payload.email },
-    { $set: { token: payload.token } },
-    { returnOriginal: false }
-  );
-  let user = queryResult.value;
+  let user = await mongo.db.updateUser({ email: payload.email }, { token: payload.token, origin: 'github' });
   if (!user) {
-    const insertion = await mongo.db.collection('Users').insert(payload);
-    if (!insertion.result.ok) {
-      return done (insertion.writeError, null);
+    const result = await mongo.db.insertUser(payload);
+    if (!result.ok) {
+      return done (null, false, new Error(result.data));
     }
-    user = insertion.ops[0];
+    user = result.data;
   }
   return done(null, user);
 }));
@@ -42,8 +39,7 @@ passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
 }, async (email, password, done) => {
-  const searchResult = await mongo.db.collection('Users').findOne({ email: email });
-  let user = searchResult.value;
+  const user = await mongo.db.getUser({ email: email });
   if (!user || !security.compare(password, user.password)) {
     console.log('User with such credentials does not exist');
     return done(null, false, new Error('User with such credentials does not exist'));
@@ -64,15 +60,17 @@ passport.use('local-signup', new LocalStrategy({
   });
 
   if (validation.passes()) {
-    let user = await mongo.db.collection('Users').findOne({ email: req.body.email });
+    let user = await mongo.db.getUser({ email: req.body.email });
     if (!user) {
       const passwordHash = await security.hash(req.body.password);
-      const insertionResult = await mongo.db.collection('Users').insert({
+      const insertionResult = await mongo.db.insertUser({
         email: req.body.email,
         password: passwordHash
       });
-      user = insertionResult.ops[0];
-      return done(null, user);
+      if (insertionResult.ok) {
+        return done(null, insertionResult.data);
+      }
+      return done(null, false, new Error(insertionResult.data));
     } else {
       return done(null, false, new Error('User with such email already exists'));
     }
@@ -82,8 +80,7 @@ passport.use('local-signup', new LocalStrategy({
 
 passport.serializeUser((user, done) => { done(null, { id: user._id }); });
 passport.deserializeUser(async (data, done) => {
-  const user = await mongo.db.collection('Users')
-    .findOne({ _id: mongo.ObjectId(data.id) });
+  const user = await mongo.db.getUser({ _id: mongo.ObjectId(data.id)});
   done(null, user);
 });
 
