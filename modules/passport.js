@@ -40,7 +40,7 @@ passport.use(new LocalStrategy({
   passwordField: 'password',
 }, async (email, password, done) => {
   const user = await mongo.db.getUser({ email: email });
-  if (!user || !security.compare(password, user.password)) {
+  if (!user || ! await security.compare(password, user.password)) {
     console.log('User with such credentials does not exist');
     return done(null, false, new Error('User with such credentials does not exist'));
   }

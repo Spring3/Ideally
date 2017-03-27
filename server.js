@@ -50,11 +50,25 @@ app.get('/auth/github', passport.authenticate('github', { successRedirect: '/pro
 app.post('/auth/in', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/auth' }));
 app.post('/auth/up', passport.authenticate('local-signup', { successRedirect: '/profile', failureRedirect: '/auth?action=signup'}));
 
-app.get('/profile', authCheck, async (req, res, next) => {
-  res.render('profile', { user: req.user, action: req.query.action });
+app.get('/profile', authCheck, async (req, res, next) => { res.render('profile', { user: req.user, action: req.query.action }); });
+app.post('/profile/save', authCheck, async (req, res, next) => { 
+  data = req.body;
+  const result = await mongo.db.updateUser({ _id: mongo.ObjectId(req.user._id)}, data );
+  console.log(result);
+  res.redirect('/profile');
 });
 
-app.get('/project', authCheck, async (req, res, next) => {
+app.get('/profile/projects', authCheck, async (req, res, next) => {
+  res.render('project', { user: req.user, action: req.query.action, repos: unsavedProjects });
+});
+app.get('/profile/projects/new', (req, res, next) => {
+  const projects = _.pick(req.body, 'data');
+  for (const project of projects) {
+
+  }
+});
+
+app.get('/project/sync', authCheck, async (req, res, next) => {
   const unsavedProjects = [];
   if (req.query.action === 'sync' && req.user.origin === 'github') {
     const repos = await github.getUserRepos(req.user);
@@ -67,11 +81,14 @@ app.get('/project', authCheck, async (req, res, next) => {
       }
     });
   }
-  res.render('project', { user: req.user, action: req.query.action, repos: unsavedProjects });
 });
-app.post('/project/new', (req, res, next) => {});
 app.post('/project/update', (req, res, next) => {});
 app.post('/project/:id/apply', (req, res, next) => {});
+app.get('/logout', (req, res, next) => {
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+})
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Server is up');

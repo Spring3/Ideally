@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
+const _ = require('underscore');
 
 class Database {
   constructor (dbInstance) {
@@ -22,6 +23,10 @@ class Database {
 
   async getProject(condition) {
     return await this.db.collection('Projects').findOne(condition);
+  }
+
+  async createProjects(project) {
+    return await this.db.collection('Projects').insert(_.pick(project, 'data'));
   }
 
   async getUser(condition) {

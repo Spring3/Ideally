@@ -6,7 +6,7 @@ async function hash(password) {
   return hash;
 }
 
-async function compare(password, hash) {
+async function compare(password, hash = '') {
   if (!password) return false;
   const result = await bcrypt.compare(password, hash);
   return result;

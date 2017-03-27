@@ -8,39 +8,76 @@ block body
   .container
     .row
       .col-xs-12.col-sm-10.col-sm-offset-1.col-md-8.col-md-offset-2.pane.margined-top
-        h3.text-center Profile Overview
-        div.col-sm-4.margined-top
-          .image-div(style='background: url(https://avatars2.githubusercontent.com/u/4171202?v=3) no-repeat center;height: 180px;width: 180px;background-size: cover;border-radius: 5px;margin:0 auto;')
-          p.text-center.margined-top Status:
-            span.text-success ✓ Available
-          if (user)
-            div.text-center
-              a.btn(class="btn-default", href="#/") Edit
-        div.col-sm-8.margined-top
-          h4.text-center.visible-xs Daniyil Vasylenko 
-          h4.hidden-xs Daniyil Vasylenko 
-          h5.margined-top
-            b Country: 
-            | Ukraine
-          h5 
-            b Bio: 
-            | Node.js engineer @dial-once 
-          h5 
-            b Github:
-              a(href="#/") @Spring3
-          h5 
-            b Main language: 
-            | Javascript
-          h5 
-            b Main stack: 
-            | Node.js, React.js, Electron
-          div
-            +list-group(['Node.js', 'Javascript', 'MongoDB', 'React', 'Electron', 'Bootstrap'])
-        div.clearfix
-        div.col-sm-4.col-sm-offset-4.margined-top
-          a.btn(class="btn-primary btn-lg btn-block",href="#/") Get in touch
-
-
+        if (!action || action !== 'edit')
+          h3.text-center Profile Overview
+          div.col-sm-4.margined-top
+            .image-div(style='background: url(#{user.avatar}) no-repeat center;height: 180px;width: 180px;background-size: cover;border-radius: 5px;margin:0 auto;')
+            p.text-center.margined-top Status:
+              if (user.status === 'on')
+                span.text-success ✓ Available
+              else 
+                span.text-danger x Not Available
+            if (user)
+              div.text-center
+                a.btn(class="btn-default", href="/profile?action=edit") Edit
+          div.col-sm-8.margined-top
+            h4.text-center.visible-xs #{user.name}
+            h4.hidden-xs #{user.name} 
+            h5.margined-top
+              b Country: 
+              | #{user.country}
+            h5 
+              b Bio: 
+              | #{user.bio}
+            if (user.origin === 'github')
+              h5 
+                b Github:
+                  a(href="#{user.url}") #{user.url.split('/').slice(-1)[0]}
+            h5 
+              b Main language: 
+              | #{user.language}
+            h5 
+            div
+              +list-group(user.stack.split(',') || [])
+          div.clearfix
+            div.col-sm-4.col-sm-offset-4.margined-top
+              a.btn(class="btn-primary btn-lg btn-block",href="#/") Get in touch
+        else if (action === 'edit')
+          form(action='/profile/save', method='post')
+            h3.text-center Profile Overview
+            div.col-sm-4.margined-top
+              .form-group
+                label Avatar URL
+                input.form-control(type="text",placeholder="avatar url",name="avatar", value="#{user.avatar || ''}")
+              .checkbox
+                label(style="display: inline-block; width: 120px;") Available:
+                if (user.status === 'on')
+                  input(type="checkbox",name="status",checked)
+                else
+                  input(type="checkbox",name="status")
+            div.col-sm-8.margined-top
+              .form-group
+                label Name
+                input.form-control(type="text",placeholder="name",name="name", value="#{user.name || ''}")
+              h5.margined-top
+                .form-group
+                label Country
+                input.form-control(type="text",placeholder="country",name="country", value="#{user.country || ''}")
+              h5 
+                .form-group
+                label Biography
+                input.form-control(type="text",placeholder="biography",name="bio", value="#{user.bio || ''}")
+              h5 
+                .form-group
+                label Main programming language
+                input.form-control(type="text",placeholder="programming lanugage",name="language", value="#{user.language || ''}")
+              h5
+                .form-group
+                label Main tech stack
+                input.form-control(type="text",placeholder="comma separated",name="stack", value="#{user.stack || ''}")
+            div.clearfix
+              div.col-sm-4.col-sm-offset-4.margined-top
+                input.btn(class="btn-primary btn-lg btn-block",type="submit",value="Save")
 
     hr
     footer
