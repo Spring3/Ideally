@@ -11,10 +11,12 @@ const helmet = require('helmet');
 const passport = require('./modules/passport');
 const security = require('./modules/security');
 const github = require('./modules/github');
+const _ = require('underscore');
 const ONE_WEEK = 7 * 24 * 60 * 60 * 1000;
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
+app.use(express.static(__dirname + '/public'));
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -50,25 +52,55 @@ app.get('/auth/github', passport.authenticate('github', { successRedirect: '/pro
 app.post('/auth/in', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/auth' }));
 app.post('/auth/up', passport.authenticate('local-signup', { successRedirect: '/profile', failureRedirect: '/auth?action=signup'}));
 
-app.get('/profile', authCheck, async (req, res, next) => { res.render('profile', { user: req.user, action: req.query.action }); });
-app.post('/profile/save', authCheck, async (req, res, next) => { 
-  data = req.body;
-  const result = await mongo.db.updateUser({ _id: mongo.ObjectId(req.user._id)}, data );
-  console.log(result);
+app.get('/profile/project', authCheck, async (req, res, next) => {
+  res.render('projectAdd', {});
+});
+
+app.get('/profile/:id', async (req, res, next) => {
+  const user = await mongo.db.getUser({ _id: mongo.ObjectId(req.params.id) });
+  const userProjects = await mongo.db.getProjects(user);
+  res.render('publicProfile', { user: user, repos: userProjects || [] });
+});
+
+app.get('/profile', authCheck, async (req, res, next) => {
+  const userProjects = await mongo.db.getProjects(req.user);
+  res.render('profile', { user: req.user, action: req.query.action, repos: userProjects || [] });
+});
+
+app.post('/profile', authCheck, async (req, res, next) => { 
+  const result = await mongo.db.updateUser({ _id: mongo.ObjectId(req.user._id)}, req.body );
   res.redirect('/profile');
 });
 
-app.get('/profile/projects', authCheck, async (req, res, next) => {
-  res.render('project', { user: req.user, action: req.query.action, repos: unsavedProjects });
+app.get('/project', async (req, res, next) => {
+  const project = await mongo.db.getProject({ _id: mongo.ObjectId(req.query.id) });
+  const projectOwner = await mongo.db.getUser({ _id: project.owner });
+  project.owner = _.pick(projectOwner, 'name', '_id');
+  res.render('project', project);
 });
-app.get('/profile/projects/new', (req, res, next) => {
-  const projects = _.pick(req.body, 'data');
-  for (const project of projects) {
 
+app.post('/project', authCheck, async (req, res, next) => {
+  const result = await mongo.db.insertProject(req.user, _.pick(req.body, 'name', 'link', 'description', 'positions'));
+  res.redirect('/profile');
+});
+
+app.patch('/project', authCheck, async (req, res, next) => {
+  const result = await mongo.db.updateProject(_.pick(req.body, 'name', 'link', 'description', 'positions'));
+  res.redirect('/profile');
+});
+
+app.get('/project/rm', authCheck, async (req, res, next) => {
+  const project = await mongo.db.getProject({ _id: mongo.ObjectId(req.query.id) });
+  const projectOwner = await mongo.db.getUser({ _id: mongo.ObjectId(project.owner) });
+  if (req.user.email === projectOwner.email) {
+    mongo.db.deleteProject(project._id);
+    res.redirect('/profile');
+  } else {
+    res.sendStatus(403);
   }
 });
 
-app.get('/project/sync', authCheck, async (req, res, next) => {
+app.get('/project/import', authCheck, async (req, res, next) => {
   const unsavedProjects = [];
   if (req.query.action === 'sync' && req.user.origin === 'github') {
     const repos = await github.getUserRepos(req.user);
@@ -81,9 +113,9 @@ app.get('/project/sync', authCheck, async (req, res, next) => {
       }
     });
   }
+  res.render('profile', { user: req.user, action: req.query.action, repos: userProjects || [] });
 });
-app.post('/project/update', (req, res, next) => {});
-app.post('/project/:id/apply', (req, res, next) => {});
+
 app.get('/logout', (req, res, next) => {
   req.logout();
   req.session.destroy();

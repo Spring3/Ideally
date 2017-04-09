@@ -18,30 +18,25 @@ block body
 
     .collapse.navbar-collapse( id='dropdown_menu' )
       ul.nav.navbar-nav
-  if (!user)
-    .jumbotron.row
-      .container.col-sm-6.col-sm-offset-3
-        h2 Let's Get Started!
-        p
-          | Join the community and review the number of projects, that might be looking exatcly for someone like you. Or if you are looking for some people to join you in development, feel free to publish one of yours.
-        p
-          a.btn(class="btn-primary", href="/auth") Sign in with email
-          a.btn(class="btn-default gh",href="/auth?type=gh",role="button") Sign in with Github
   .container
     .row
-      each project in projects
-        .col-md-4.margined-top
-          .pane
-            h2 #{project.name}
-            p #{project.description}
-            strong Looking for:
-            +list-group-custom()
-              each position in project.positions.split(',')
-                a.list-group-item(class="white" href="#/")
-                  +btn-xs("✓")
-                  span #{position}
+      .col-xs-12.margined-top
+        .pane(style="display: block;")
+          form(method="post", action="/project")
+            +input("text", "name", "", "Project name", "name")
+            +input("text", "name", "", "Project Link", "link")
+            .form-group
+              label Project Description
+              textarea(class="form-control", rows="5", name="description")
+                | 
+            .form-group
+              label Looking for:
+              +list-group-custom()
+                input.form-control(type="text", name="positions", value="Node.js Developer")
+                h5 
+                  small (comma-separated list of positions)
             p
-              a.btn(class="btn-primary", href="/project?id=#{project._id}") View more
+              +submit("Publish", "primary")
     hr
     footer
       p 

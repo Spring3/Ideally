@@ -7,11 +7,6 @@ class Database {
     this.db = dbInstance;
   }
 
-  async getProjects(user) {
-    const condition = user ? { owner: user._id } : {};
-    return await this.db.collection('Projects').find(condition).toArray();
-  }
-
   async updateUser(condition, updates) {
     const result = await this.db.collection('Users').findOneAndUpdate(
       condition,
@@ -21,9 +16,26 @@ class Database {
     return result ? result.value : result;
   }
 
+  async getProjects(user) {
+    const condition = user ? { owner: user._id } : {};
+    return await this.db.collection('Projects').find(condition).toArray();
+  }
+
+  async deleteProject(id) {
+    return await this.db.collection('Projects').remove({ _id: id });
+  }
+
   async getProject(condition) {
     return await this.db.collection('Projects').findOne(condition);
   }
+
+  async insertProject(user, project) {
+    return await this.db.collection('Projects').insert(Object.assign({ owner: user._id }, project));
+  }
+
+  async updateProject(project) {
+    return await this.db.collection('Projects').update({ _id: project._id }, { $set: project });
+  } 
 
   async createProjects(project) {
     return await this.db.collection('Projects').insert(_.pick(project, 'data'));
