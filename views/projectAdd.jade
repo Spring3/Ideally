@@ -24,7 +24,7 @@ block body
         .pane(style="display: block;")
           form(method="post", action="/project")
             +input("text", "name", "", "Project name", "name")
-            +input("text", "name", "", "Project Link", "link")
+            +input("text", "name", "", "Project Link", "html_url")
             .form-group
               label Project Description
               textarea(class="form-control", rows="5", name="description")
@@ -32,7 +32,7 @@ block body
             .form-group
               label Looking for:
               +list-group-custom()
-                input.form-control(type="text", name="positions", value="Node.js Developer")
+                input.form-control(type="text", name="positions", value="")
                 h5 
                   small (comma-separated list of positions)
             p

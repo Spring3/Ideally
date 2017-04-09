@@ -22,38 +22,46 @@ block body
     .row
       if (user && action === "edit")
         .col-xs-12.margined-top
-          .pane
-            form(method="patch", action="/project")
-              +input("text", "name", "", "Project name", "name")
-              +input("text", "name", "", "Project Link", "link")
+          .pane(style="display: block;")
+            form(method="post",action="/project/#{project._id}")
+              .form-group
+                label Project Name
+                input.form-control(type="text",name="name",value="#{project.name}")
+              .form-group
+                label Project Link
+                input.form-control(type="text",name="html_url",value="#{project.html_url}")
               .form-group
                 label Project Description
-                textarea(class="form-control", rows="5")
-                  | Here the project owner is supposed to provide some short description for the project. Maybe some aims and goals, what technologies are used.
+                textarea.form-control(class="form-control",name="description",rows="5")
+                  | #{project.description}
               .form-group
                 label Looking for:
-                +list-group-custom()
-                  input.form-control(type="text", value="")
-                  h5 
-                    small (comma-separated list of positions)
-              p
-                +submit("Publish", "primary")
+                - var positions = project.positions || []
+                  +list-group-custom()
+                    input.form-control(type="text",name="positions",value="#{positions.join(',')}")
+                    h5 
+                      small (comma-separated list of positions)
+              .form-group
+                input.form-control(value="Publish",class="btn-primary",type="submit")
       else if (!user || !action || action === 'view')
         form.col-xs-12.col-sm-10.col-sm-offset-1.margined-top
           .col-xs-12.pane
             .col-sm-6
-              h2 #{name}
+              if (project.html_url)
+                a(href="#{project.html_url}",style="font-size:24px") #{project.name}
+              else 
+                h2 #{project.name}
               .form-group
                 h4 
                   small Owner:   
-                  a(href="/profile/#{owner._id}") #{owner.name}
+                  a(href="/profile/#{project.owner._id}") #{project.owner.name}
               .form-group
                 label Description
-                p #{description}
+                p #{project.description}
             .col-sm-6(style="border-left: solid 1px #FE9E8F;")
               h2 Looking for
               +list-group-custom()
-                each position in positions.split(',')
+                each position in project.positions || []
                   +list-group-item("/project/#{project._id}/apply")
                     button.btn(class="btn-default",type="button" style="border-radius: 50% 50%;") ✓
                     span

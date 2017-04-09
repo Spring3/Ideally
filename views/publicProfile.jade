@@ -25,7 +25,7 @@ block body
           +tab("Profile", "active")
             h3.text-center Profile Overview
             div.col-sm-4.margined-top
-              if user && user.avatar
+              if (user && user.avatar)
                 .image-div(style='background: url(#{user.avatar}) no-repeat center;height: 180px;width: 180px;background-size: cover;border-radius: 5px;margin:0 auto;')
               else
                 .image-div(style='background: url("http://icookgood.ru/users/media/avatar/263/") no-repeat center;height: 180px;width: 180px;background-size: cover;border-radius: 5px;margin:0 auto;')

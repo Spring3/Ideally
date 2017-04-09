@@ -13,15 +13,16 @@ passport.use(new GitHubStrategy({
   clientSecret: process.env.GH_CLIENT_SECRET,
   callbackURL: 'https://ideallyapp.herokuapp.com/auth/github'
 }, async (accessToken, refreshToken, profile, done) => {
+  const email = github.getEmail(accessToken);
   const payload = {
     name: profile.displayName,
     url: profile.profileUrl,
-    email: profile.emails[0].value,
     country: profile._json.location,
     bio: profile._json.bio,
     avatar: profile._json.avatar_url,
     origin: 'github',
-    token: accessToken
+    token: accessToken,
+    email
   };
   let user = await mongo.db.updateUser({ email: payload.email }, { token: payload.token, origin: 'github' });
   if (!user) {

@@ -36,7 +36,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', async (req, res, next) => { res.render('index', { user: req.user, projects: await mongo.db.getProjects() }); });
-app.get('/about', (req, res, next) => { res.render('about'); });
 
 app.get('/auth', (req, res, next) => {
   if (req.user) {
@@ -53,7 +52,7 @@ app.post('/auth/in', passport.authenticate('local', { successRedirect: '/', fail
 app.post('/auth/up', passport.authenticate('local-signup', { successRedirect: '/profile', failureRedirect: '/auth?action=signup'}));
 
 app.get('/profile/project', authCheck, async (req, res, next) => {
-  res.render('projectAdd', {});
+  res.render('projectAdd');
 });
 
 app.get('/profile/:id', async (req, res, next) => {
@@ -68,6 +67,10 @@ app.get('/profile', authCheck, async (req, res, next) => {
 });
 
 app.post('/profile', authCheck, async (req, res, next) => { 
+  req.body.stack = req.body.stack ? req.body.stack.split(',') : [];
+  if (!req.body.hasOwnProperty('status')) {
+    req.body.status = "off";
+  }
   const result = await mongo.db.updateUser({ _id: mongo.ObjectId(req.user._id)}, req.body );
   res.redirect('/profile');
 });
@@ -76,16 +79,33 @@ app.get('/project', async (req, res, next) => {
   const project = await mongo.db.getProject({ _id: mongo.ObjectId(req.query.id) });
   const projectOwner = await mongo.db.getUser({ _id: project.owner });
   project.owner = _.pick(projectOwner, 'name', '_id');
-  res.render('project', project);
+  if (req.user) {
+    if (!project.owner._id.equals(req.user._id)) {
+      req.query.action = "view";
+    }
+  } else {
+    req.query.action = "view";
+  }
+  res.render('project', { user: req.user, action: req.query.action, project: project });
 });
 
 app.post('/project', authCheck, async (req, res, next) => {
-  const result = await mongo.db.insertProject(req.user, _.pick(req.body, 'name', 'link', 'description', 'positions'));
+  const validProject = _.pick(req.body, 'name', 'html_url', 'description', 'positions');
+  if (validProject.positions) {
+    validProject.positions = Array.isArray(validProject.positions) ? validProject.positions : validProject.positions.split(',');
+  } else {
+    validProject.positions = [];
+  }
+  const result = await mongo.db.insertProject(req.user, validProject);
   res.redirect('/profile');
 });
 
-app.patch('/project', authCheck, async (req, res, next) => {
-  const result = await mongo.db.updateProject(_.pick(req.body, 'name', 'link', 'description', 'positions'));
+app.post('/project/:id', authCheck, async (req, res, next) => {
+  const validObject = _.pick(req.body, 'name', 'html_url', 'description', 'positions');
+  console.log(validObject);
+  validObject.positions = validObject.positions ? validObject.positions.split(',') : [];
+  validObject._id = req.params.id;
+  const result = await mongo.db.updateProject(validObject);
   res.redirect('/profile');
 });
 
@@ -101,19 +121,18 @@ app.get('/project/rm', authCheck, async (req, res, next) => {
 });
 
 app.get('/project/import', authCheck, async (req, res, next) => {
-  const unsavedProjects = [];
-  if (req.query.action === 'sync' && req.user.origin === 'github') {
+  if (req.user && req.user.origin === 'github') {
     const repos = await github.getUserRepos(req.user);
-    repos.map((repo) => { _.pick(repo, 'name', 'html_url', 'description', 'language')})
+    repos.map(repo => _.pick(repo, 'name', 'html_url', 'description', 'language'))
     .forEach(async (repo) => {
-      let result = await mongo.db.getProject({ owner: req.user._id, name: repo.name });
+      let result = await mongo.db.getProject({ owner: mongo.ObjectId(req.user._id), name: repo.name });
       if (!result) {
         repo.owner = req.user._id;
-        unsavedProjects.push(repo);
+        await mongo.db.insertProject(req.user, repo);
       }
     });
   }
-  res.render('profile', { user: req.user, action: req.query.action, repos: userProjects || [] });
+  res.redirect('/profile');
 });
 
 app.get('/logout', (req, res, next) => {

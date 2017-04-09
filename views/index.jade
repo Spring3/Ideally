@@ -15,7 +15,6 @@ block body
           a(href='/profile' class="navbar-menu") Profile
           a(href='/' class="navbar-menu") Projects
           a(href='/logout' class="navbar-menu") Log out
-
     .collapse.navbar-collapse( id='dropdown_menu' )
       ul.nav.navbar-nav
   if (!user)
@@ -29,19 +28,20 @@ block body
           a.btn(class="btn-default gh",href="/auth?type=gh",role="button") Sign in with Github
   .container
     .row
-      each project in projects
-        .col-md-4.margined-top
-          .pane
-            h2 #{project.name}
-            p #{project.description}
-            strong Looking for:
-            +list-group-custom()
-              each position in project.positions.split(',')
-                a.list-group-item(class="white" href="#/")
-                  +btn-xs("✓")
-                  span #{position}
-            p
-              a.btn(class="btn-primary", href="/project?id=#{project._id}") View more
+      each project in projects || []
+        if (project.positions)
+          .col-md-4.margined-top
+            .pane
+              h2 #{project.name}
+              p #{project.description}
+              strong Looking for:
+              +list-group-custom()
+                each position in project.positions
+                  a.list-group-item(class="white" href="#/")
+                    +btn-xs("✓")
+                    span #{position}
+              p
+                a.btn(class="btn-primary", href="/project?id=#{project._id}") View more
     hr
     footer
       p 

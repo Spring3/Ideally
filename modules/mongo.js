@@ -34,7 +34,9 @@ class Database {
   }
 
   async updateProject(project) {
-    return await this.db.collection('Projects').update({ _id: project._id }, { $set: project });
+    const id = ObjectId(project._id);
+    delete project._id;
+    return await this.db.collection('Projects').update({ _id: id }, { $set: project });
   } 
 
   async createProjects(project) {
