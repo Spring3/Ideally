@@ -35,7 +35,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', async (req, res, next) => { res.render('index', { user: req.user, projects: await mongo.db.getProjects() }); });
+app.get('/', async (req, res, next) => {
+  let applications;
+  if (req.user) {
+    applications = await mongo.db.getApplicationsPerUser(req.user._id);
+  }
+  console.log(applications);
+  res.render('index', { user: req.user, projects: await mongo.db.getProjects(), applications: applications || [] });
+});
 
 app.get('/auth', (req, res, next) => {
   if (req.user) {
@@ -102,11 +109,16 @@ app.post('/project', authCheck, async (req, res, next) => {
 
 app.post('/project/:id', authCheck, async (req, res, next) => {
   const validObject = _.pick(req.body, 'name', 'html_url', 'description', 'positions');
-  console.log(validObject);
   validObject.positions = validObject.positions ? validObject.positions.split(',') : [];
   validObject._id = req.params.id;
   const result = await mongo.db.updateProject(validObject);
   res.redirect('/profile');
+});
+
+app.get('/project/:id/apply', authCheck, async (req, res, next) => {
+  const projectId = req.params.id;
+  const result = await mongo.db.applyToProject(req.user._id, projectId, req.query.position);
+  res.redirect('/');
 });
 
 app.get('/project/rm', authCheck, async (req, res, next) => {

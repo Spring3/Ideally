@@ -38,15 +38,16 @@ block body
                 label Looking for:
                 - var positions = project.positions || []
                   +list-group-custom()
-                    input.form-control(type="text",name="positions",value="#{positions.join(',')}")
-                    h5 
-                      small (comma-separated list of positions)
+                    div
+                      input.form-control(type="text",name="positions",value="#{positions.join(',')}")
+                      h5 
+                        small (comma-separated list of positions)
               .form-group
                 input.form-control(value="Publish",class="btn-primary",type="submit")
       else if (!user || !action || action === 'view')
         form.col-xs-12.col-sm-10.col-sm-offset-1.margined-top
           .col-xs-12.pane
-            .col-sm-6
+            .col-sm-6(style="text-align:center")
               if (project.html_url)
                 a(href="#{project.html_url}",style="font-size:24px") #{project.name}
               else 
@@ -54,17 +55,17 @@ block body
               .form-group
                 h4 
                   small Owner:   
-                  a(href="/profile/#{project.owner._id}") #{project.owner.name}
+                  a(href="/profile/#{project.owner._id}",style="font-size:14px") #{project.owner.name}
               .form-group
-                label Description
-                p #{project.description}
-            .col-sm-6(style="border-left: solid 1px #FE9E8F;")
-              h2 Looking for
-              +list-group-custom()
+                p(style="font-size:16px") #{project.description}
+            .col-sm-6(style="border-left: solid 1px #FE9E8F; text-align: center;")
+              h3(style="margin-top:0px") Positions
+              .list-group(style="margin-top: 20px;")
                 each position in project.positions || []
-                  +list-group-item("/project/#{project._id}/apply")
-                    button.btn(class="btn-default",type="button" style="border-radius: 50% 50%;") ✓
-                    span
+                  - var url = "/project/" + project._id + "/apply"
+                  div.list-group
+                    a.btn(class="btn-default",href=url style="border-radius: 50% 50%;margin-right:10px;width:30px;height:30px;padding:5px") ✓
+                    span(style="font-size:16px")
                       | #{position}
     hr
     footer

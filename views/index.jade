@@ -31,15 +31,19 @@ block body
       each project in projects || []
         if (project.positions)
           .col-md-4.margined-top
-            .pane
+            .pane(style="text-align:center")
               h2 #{project.name}
               p #{project.description}
-              strong Looking for:
-              +list-group-custom()
-                each position in project.positions
-                  a.list-group-item(class="white" href="#/")
-                    +btn-xs("✓")
-                    span #{position}
+              div(class="margined-top")
+                strong Looking for:
+                +list-group-custom()
+                  each position in project.positions
+                    div.list-group-item(class="white" href="#/")
+                      - var url = "/project/" + project._id + "/apply?position=" + position
+                      - var contains = applications.filter((apl) => (apl.project.equals(project._id) && apl.position === position) ).length > 0
+                      - var className = contains ? "btn-success" : "btn-default"
+                      a.btn(class="#{className}",href=url style="border-radius: 50% 50%;margin-right:10px;width:30px;height:30px;padding:5px") ✓
+                      span(style="color:black") #{position}
               p
                 a.btn(class="btn-primary", href="/project?id=#{project._id}") View more
     hr

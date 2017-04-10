@@ -98,7 +98,7 @@ block body
             if (user && user.origin === 'github')
               a.btn(class="btn-default margined-top gh" href="/project/import") Import from github
             each project in repos || []
-              div
+              div(style="margin-top: 10px;border: solid 2px #FA5B4D;border-radius: 3px;")
                 span
                   a.btn(href="/project/rm?id=#{project._id}") X
                 span
