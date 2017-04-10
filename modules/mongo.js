@@ -54,7 +54,6 @@ class Database {
 
   async applyToProject(userId, projectId, position) {
     const applied = await this.db.collection('Applications').findOne({ user: ObjectId(userId), project: ObjectId(projectId), position });
-    console.log(applied);
     if (!applied) {
       const insertion = await this.db.collection('Applications').insert({ user: ObjectId(userId), project: ObjectId(projectId), position });
       return insertion.result.ok ? { ok: true, data: insertion.ops[0] } : { ok: false, data: insertion.writeError };
@@ -62,6 +61,10 @@ class Database {
       await this.db.collection('Applications').remove({ _id: ObjectId(applied._id) });
       return false;
     }
+  }
+
+  async declineApplication(id) {
+    return await this.db.collection('Applications').remove({ _id: ObjectId(id) });
   }
 
   async getApplicationsPerUser(userId) {

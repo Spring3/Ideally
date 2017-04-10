@@ -107,7 +107,11 @@ block body
 
 
           +tab("Applications", "")
-
+            each application in applications || []
+              div(style="margin-top: 10px;border: solid 2px #FA5B4D;border-radius: 3px;")
+                span
+                  a.btn(href="/application/decline?id=#{application._id}&redirect=profile") X
+                a.btn(href="/project?id=#{application.project}") #{application.name}
 
     hr
     footer

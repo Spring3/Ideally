@@ -40,7 +40,6 @@ app.get('/', async (req, res, next) => {
   if (req.user) {
     applications = await mongo.db.getApplicationsPerUser(req.user._id);
   }
-  console.log(applications);
   res.render('index', { user: req.user, projects: await mongo.db.getProjects(), applications: applications || [] });
 });
 
@@ -70,7 +69,14 @@ app.get('/profile/:id', async (req, res, next) => {
 
 app.get('/profile', authCheck, async (req, res, next) => {
   const userProjects = await mongo.db.getProjects(req.user);
-  res.render('profile', { user: req.user, action: req.query.action, repos: userProjects || [] });
+  const applications = await mongo.db.getApplicationsPerUser(req.user._id);
+  const validApplications = [];
+  for (const appl of applications) {
+    const project = await mongo.db.getProject({ _id: mongo.ObjectId(appl.project) });
+    appl.name = project.name;
+    validApplications.push(appl);
+  }
+  res.render('profile', { user: req.user, action: req.query.action, repos: userProjects || [], applications: validApplications || [] });
 });
 
 app.post('/profile', authCheck, async (req, res, next) => { 
@@ -85,15 +91,26 @@ app.post('/profile', authCheck, async (req, res, next) => {
 app.get('/project', async (req, res, next) => {
   const project = await mongo.db.getProject({ _id: mongo.ObjectId(req.query.id) });
   const projectOwner = await mongo.db.getUser({ _id: project.owner });
+  let applications = [];
+  const projectApplications = [];
   project.owner = _.pick(projectOwner, 'name', '_id');
   if (req.user) {
+    applications = await mongo.db.getApplicationsPerUser(req.user._id);
     if (!project.owner._id.equals(req.user._id)) {
       req.query.action = "view";
+    } else {
+      const projApplications = await mongo.db.getApplications(project._id);
+      for (const appl of projApplications) {
+        const applicant = await mongo.db.getUser({ _id: mongo.ObjectId(appl.user) });
+        console.log(applicant);
+        appl.applicant = applicant.name;
+        projectApplications.push(appl);
+      }
     }
   } else {
     req.query.action = "view";
   }
-  res.render('project', { user: req.user, action: req.query.action, project: project });
+  res.render('project', { user: req.user, action: req.query.action, project: project, applications, projectApplications });
 });
 
 app.post('/project', authCheck, async (req, res, next) => {
@@ -117,7 +134,10 @@ app.post('/project/:id', authCheck, async (req, res, next) => {
 
 app.get('/project/:id/apply', authCheck, async (req, res, next) => {
   const projectId = req.params.id;
-  const result = await mongo.db.applyToProject(req.user._id, projectId, req.query.position);
+  const project = await mongo.db.getProject({ _id: mongo.ObjectId(projectId) });
+  if (!req.user._id.equals(project.owner)) {
+    const result = await mongo.db.applyToProject(req.user._id, projectId, req.query.position);
+  }
   res.redirect('/');
 });
 
@@ -145,6 +165,11 @@ app.get('/project/import', authCheck, async (req, res, next) => {
     });
   }
   res.redirect('/profile');
+});
+
+app.get('/application/decline', authCheck, async (req, res, next) => {
+  await mongo.db.declineApplication(req.query.id);
+  res.redirect(`/${req.query.redirect}`);
 });
 
 app.get('/logout', (req, res, next) => {
