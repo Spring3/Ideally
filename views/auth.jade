@@ -1,0 +1,53 @@
+extends _bootstrap
+append styles
+  link(href='css/bootstrap.min.css', rel='stylesheet')
+  link(href='css/index.css', rel='stylesheet')
+block body
+  nav( role="navigation", class=["navbar", "navbar-"] )
+    .navbar-header
+      button.navbar-toggle.collapsed( type="button", data-toggle="collapse", data-target="#dropdown_menu", aria-expanded="false", aria-controls="navbar")
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/') Ideally
+      if (user)
+        div(class="navbar-menu-container")
+          a(href='/profile' class="navbar-menu") Profile
+          a(href='/' class="navbar-menu") Projects
+          a(href='/logout' class="navbar-menu") Log out
+
+    .collapse.navbar-collapse( id='dropdown_menu' )
+      ul.nav.navbar-nav
+  .container
+    .row
+      .col-md-6.col-md-offset-3.margined-top
+        if (!action || action === 'signin')
+          form(method="post", action="/auth/in")
+            h3 Authorization
+            +input("text", "email", "", "Email", "email")
+            +input("password", "password", "", "Password", "password")
+            div(style="display:inline-block;width:100%;")
+              input.btn(class="btn-success btn-lg",type="submit",value="Sign in",style="float:left;width:47%;")
+              a.btn(class="btn-primary btn-lg", href="/auth?action=signup",style="float:right;width:47%;") Sign up
+            h4.margined-top.text-center or
+            a.btn(class="btn-default btn-block btn-lg gh",href="/auth?type=gh",role="button") Sign in with Github
+        else if (action === 'signup')
+          form(method="post", action="/auth/up")
+            h3 Registration
+            +input("text", "email", "", "Email", "email")
+            +input("password", "password", "", "Password", "password")
+            +input("password", "password", "", "Password repeat", "passwordRepeat")
+            div(style="display:inline-block;width:100%;")
+              input.btn(class="btn-success btn-lg",type="submit",value="Sign up",style="float:left;width:47%;")
+              a.btn(class="btn-primary btn-lg", href="/auth",style="float:right;width:47%;") Sign in
+
+    hr
+    footer
+      p 
+        | Copyrights © 
+        a(href="https://www.linkedin.com/in/dvasylenko/") Daniyil Vasylenko
+        |  (2017)
+append scripts
+  script(src="js/jquery.min.js")
+  script(src="js/bootstrap.min.js")

@@ -3,7 +3,8 @@ body {
 }
 
 nav {
-  height: 125px;
+  min-height: 125px;
+  padding-bottom: 50px;
   background: #FA5B4D !important;
   border-radius: 0px !important;
   border: none !important;
@@ -43,6 +44,7 @@ nav {
   border: solid 2px #FE9E8F;
   border-radius: 3px;
   padding: 20px;
+  display: inline-block;
 }
 
 .margined-top {
@@ -53,4 +55,53 @@ nav {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.btn-primary {
+  background: #FA5B4D;
+  border-color: #FA5B4D;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background: #FE9E8F;
+  border-color: #FE9E8F;
+}
+
+.gh {
+  background: #24292E;
+  color: white;
+}
+
+.gh:hover, .gh:focus {
+  background: #464B4F;
+  color: white;
+}
+
+.list-group-item {
+  margin: 5px;
+  padding: 5px 10px !important;
+  border-radius: 3px;
+  display: inline-block;
+  background: #FE9E8F;
+  color: white;
+}
+
+.list-group-item:hover {
+  background: #FA5B4D;
+}
+
+.white {
+  background: white;
+}
+
+.navbar-menu-container {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.navbar-menu-container .navbar-menu {
+  color: white;
+  font-size: 16px;
+  margin: 0 5px;
 }

@@ -1,0 +1,8 @@
+node_modules/
+test/
+.git
+.*
+LICENSE
+README.md
+sonar-project.properties
+Dockerfile
